@@ -1,0 +1,116 @@
+- name: Configure Web Server
+  hosts: web
+  become: true
+  gather_facts: true
+  vars:
+    ansible_user: ec2-user
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+  tasks:
+    - name: Wait for SSH connection
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+
+    - name: Create custom web page
+      ansible.builtin.copy:
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>AWS Deployment</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                background: linear-gradient(to right, #00b4db, #0083b0);
+                color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                text-align: center;
+                animation: fadeIn 2s ease-in-out;
+              }
+
+              h1 {
+                font-size: 4rem;
+                font-weight: bold;
+                margin-bottom: 20px;
+                animation: bounceIn 2s infinite;
+              }
+
+              p {
+                font-size: 1.5rem;
+                line-height: 1.5;
+                margin-top: 20px;
+                animation: fadeInUp 2s ease-in-out;
+              }
+
+              .container {
+                padding: 30px;
+                background-color: rgba(0, 0, 0, 0.6);
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+              }
+
+              .logo {
+                width: 150px;
+                margin-top: 40px;
+                animation: slideIn 2s ease-in-out;
+              }
+
+              @keyframes fadeIn {
+                from {
+                  opacity: 0;
+                }
+                to {
+                  opacity: 1;
+                }
+              }
+
+              @keyframes bounceIn {
+                0% {
+                  transform: scale(0);
+                }
+                50% {
+                  transform: scale(1.2);
+                }
+                100% {
+                  transform: scale(1);
+                }
+              }
+
+              @keyframes fadeInUp {
+                from {
+                  opacity: 0;
+                  transform: translateY(20px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+              }
+
+              .footer {
+                margin-top: 30px;
+                font-size: 1rem;
+                font-style: italic;
+                color: #ddd;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Successfully Deployed!</h1>
+              <p>Server configured with Terraform and Ansible. Your cloud journey has just begun!</p>
+              <img class="logo" src="./image.png" alt="AWS EC2">
+              <div class="footer">
+                <p>Powered by AWS, Terraform & Ansible</p>
+                <p>For support, contact <a href="mailto:support@yourcompany.com" style="color: #fff;">patriceneussi@gmail.com or cherif.mfendjou@facsciences-uy1.cm and Emmanuel le grand</a></p>
+              </div>
+            </div>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
